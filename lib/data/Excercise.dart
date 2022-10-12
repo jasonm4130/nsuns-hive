@@ -11,5 +11,8 @@ class Excercise {
   @HiveField(2)
   double trainingMax;
 
-  Excercise(this.name, this.estimatedMax, this.trainingMax);
+  Excercise(
+      {required this.name,
+      required this.estimatedMax,
+      required this.trainingMax});
 }

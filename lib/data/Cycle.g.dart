@@ -20,19 +20,22 @@ class CycleAdapter extends TypeAdapter<Cycle> {
       startDate: fields[1] as DateTime,
       uuid: fields[0] as String,
       percentageComplete: fields[2] as double,
+      excercises: (fields[3] as List?)?.cast<Excercise>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Cycle obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.uuid)
       ..writeByte(1)
       ..write(obj.startDate)
       ..writeByte(2)
-      ..write(obj.percentageComplete);
+      ..write(obj.percentageComplete)
+      ..writeByte(3)
+      ..write(obj.excercises);
   }
 
   @override

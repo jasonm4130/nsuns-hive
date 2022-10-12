@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nsuns/components/cycle_tile.dart';
+import 'package:nsuns/components/navigation_drawer.dart';
 import 'package:nsuns/data/Database.dart';
+import 'package:nsuns/pages/setup_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -27,8 +29,29 @@ class _HomePageState extends State<HomePage> {
       refresh();
     }
 
+    // If we don't have any excercises
+    if (NsunsDataBase.excercises.isEmpty) {
+      // Try and load the excercises
+      NsunsDataBase.loadExcercises();
+
+      // update the state
+      refresh();
+    }
+
     // Call the method
     super.initState();
+
+    // Show the setup after build if we don't have excercises
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Add Your Code here.
+      // if after trying to load excercises there are still none, navigate to the setup screen
+      if (NsunsDataBase.excercises.isEmpty) {
+        Navigator.pushNamed(
+          context,
+          SetupPage.routeName,
+        );
+      }
+    });
   }
 
   @override
@@ -45,6 +68,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      drawer: const NavigationDrawer(),
       body: Center(
         child: Column(
           children: cycleTiles,

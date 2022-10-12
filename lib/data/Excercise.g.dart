@@ -17,9 +17,9 @@ class ExcerciseAdapter extends TypeAdapter<Excercise> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Excercise(
-      fields[0] as String,
-      fields[1] as double,
-      fields[2] as double,
+      name: fields[0] as String,
+      estimatedMax: fields[1] as double,
+      trainingMax: fields[2] as double,
     );
   }
 
