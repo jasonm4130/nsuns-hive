@@ -1,46 +1,35 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'Set.dart';
+part of 'RepScheme.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class SetAdapter extends TypeAdapter<Set> {
+class RepSchemeAdapter extends TypeAdapter<RepScheme> {
   @override
-  final int typeId = 2;
+  final int typeId = 3;
 
   @override
-  Set read(BinaryReader reader) {
+  RepScheme read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Set(
-      complete: fields[0] as bool,
-      reps: fields[1] as int,
-      excercise: fields[2] as Excercise,
-      percentage: fields[3] as double,
-      amrap: fields[4] as bool,
-    )..repsComplete = fields[5] as int;
+    return RepScheme(
+      excercise: fields[0] as Excercise,
+      sets: (fields[2] as List).cast<dynamic>(),
+    );
   }
 
   @override
-  void write(BinaryWriter writer, Set obj) {
+  void write(BinaryWriter writer, RepScheme obj) {
     writer
-      ..writeByte(6)
-      ..writeByte(0)
-      ..write(obj.complete)
-      ..writeByte(1)
-      ..write(obj.reps)
       ..writeByte(2)
+      ..writeByte(0)
       ..write(obj.excercise)
-      ..writeByte(3)
-      ..write(obj.percentage)
-      ..writeByte(4)
-      ..write(obj.amrap)
-      ..writeByte(5)
-      ..write(obj.repsComplete);
+      ..writeByte(2)
+      ..write(obj.sets);
   }
 
   @override
@@ -49,7 +38,7 @@ class SetAdapter extends TypeAdapter<Set> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SetAdapter &&
+      other is RepSchemeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

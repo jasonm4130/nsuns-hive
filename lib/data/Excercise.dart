@@ -10,9 +10,13 @@ class Excercise {
   double estimatedMax;
   @HiveField(2)
   double trainingMax;
+  @HiveField(3)
+  bool isAssistance;
 
-  Excercise(
-      {required this.name,
-      required this.estimatedMax,
-      required this.trainingMax});
+  Excercise({
+    required this.name,
+    required this.estimatedMax,
+    required this.trainingMax,
+    this.isAssistance = false,
+  });
 }

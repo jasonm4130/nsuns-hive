@@ -1,3 +1,5 @@
+import 'package:nsuns/data/Template.dart';
+
 class Settings {
-  static Template template;
+  static Template currentTemplate = fourDayTemplate();
 }

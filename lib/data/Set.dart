@@ -13,6 +13,16 @@ class Set {
   Excercise excercise;
   @HiveField(3)
   double percentage;
+  @HiveField(4)
+  bool amrap;
+  @HiveField(5)
+  int repsComplete = 0;
 
-  Set(this.complete, this.reps, this.excercise, this.percentage);
+  Set({
+    required this.complete,
+    required this.reps,
+    required this.excercise,
+    required this.percentage,
+    this.amrap = false,
+  });
 }

@@ -78,7 +78,10 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: () => {NsunsDataBase.addCycle(), refresh()},
+            onPressed: () {
+              NsunsDataBase.addCycle();
+              refresh();
+            },
             tooltip: 'Add Cycle',
             child: const Icon(Icons.add),
           ),
