@@ -13,4 +13,6 @@ class Exercise extends HiveObject {
   late Exercise? assistanceExcercise;
   @HiveField(4)
   late bool isAssistanceExcercise = false;
+  @HiveField(5)
+  late num? estimatedOneRepMax;
 }

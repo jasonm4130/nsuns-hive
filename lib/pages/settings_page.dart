@@ -31,8 +31,8 @@ class _SettingsPageState extends State<SettingsPage> {
               textColor: Colors.white,
               onPressed: () {
                 // Clear the hive boxes
-                Boxes.getCycles().deleteFromDisk();
-                Boxes.getExercises().deleteFromDisk();
+                Boxes.getCycles().clear();
+                Boxes.getExercises().clear();
                 // Go back to the setup page because there is no data
                 Navigator.pushNamed(context, SetupPage.routeName);
               },
