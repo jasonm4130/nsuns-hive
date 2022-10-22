@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nsuns/data/Cycle.dart';
+import 'package:nsuns/data/Exercise.dart';
 import 'package:nsuns/pages/cycle_page.dart';
 import 'package:nsuns/pages/home_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nsuns/pages/settings_page.dart';
 import 'package:nsuns/pages/setup_page.dart';
-
-import 'data/Excercise.dart';
-import 'data/Set.dart';
 
 void main() async {
   // Init hive
@@ -15,11 +13,11 @@ void main() async {
 
   // Import the adaptors needed for Hive
   Hive.registerAdapter(CycleAdapter());
-  Hive.registerAdapter(ExcerciseAdapter());
-  Hive.registerAdapter(SetAdapter());
+  Hive.registerAdapter(ExerciseAdapter());
 
   // Open our hive box
-  await Hive.openBox('nsuns_database');
+  await Hive.openBox<Cycle>('cycles');
+  await Hive.openBox<Exercise>('exercises');
 
   runApp(const MyApp());
 }

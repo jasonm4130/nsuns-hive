@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nsuns/data/Database.dart';
+import 'package:nsuns/data/Boxes.dart';
 import 'package:nsuns/pages/setup_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -30,11 +30,13 @@ class _SettingsPageState extends State<SettingsPage> {
               color: Colors.red,
               textColor: Colors.white,
               onPressed: () {
-                NsunsDataBase.excercises = [];
-                NsunsDataBase.updateDataBase();
+                // Clear the hive boxes
+                Boxes.getCycles().deleteFromDisk();
+                Boxes.getExercises().deleteFromDisk();
+                // Go back to the setup page because there is no data
                 Navigator.pushNamed(context, SetupPage.routeName);
               },
-              child: const Text('Reset'),
+              child: const Text('Reset All Data'),
             ),
           ],
         ),

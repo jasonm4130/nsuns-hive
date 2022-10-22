@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nsuns/components/navigation_drawer.dart';
-import 'package:nsuns/data/Database.dart';
-import '../data/Cycle.dart';
+import 'package:nsuns/data/Boxes.dart';
+import 'package:nsuns/data/Cycle.dart';
 
 class CyclePage extends StatefulWidget {
   const CyclePage({super.key});
@@ -15,12 +14,10 @@ class _CyclePageState extends State<CyclePage> {
   Widget build(BuildContext context) {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
-    final cycleUuid = arguments['cycleUuid'];
-    final Cycle cycle =
-        NsunsDataBase.cycles.firstWhere((cycle) => cycle.uuid == cycleUuid);
+    final Cycle? cycle = Boxes.getCycle(arguments['cycleId']);
     return Scaffold(
       appBar: AppBar(
-        title: Text(cycle.getStartDateFormatted()),
+        title: Text(cycle?.getStartDateFormatted()),
       ),
     );
   }

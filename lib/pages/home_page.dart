@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nsuns/components/cycle_tile.dart';
 import 'package:nsuns/components/navigation_drawer.dart';
-import 'package:nsuns/data/Database.dart';
+import 'package:nsuns/data/Cycle.dart';
 import 'package:nsuns/pages/setup_page.dart';
+import 'package:nsuns/utils/start_of_week.dart';
+import 'package:uuid/uuid.dart';
+
+import '../data/Boxes.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -13,6 +18,17 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+Future addCycle() {
+  final String uuid = const Uuid().v4();
+  final cycle = Cycle()
+    ..uuid = uuid
+    ..startDate = startOfWeek();
+
+  // Get the cycles box
+  final box = Boxes.getCycles();
+  return box.put(uuid, cycle);
+}
+
 class _HomePageState extends State<HomePage> {
   refresh() {
     setState(() {});
@@ -20,32 +36,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // If there is nothing in the cycles array
-    if (NsunsDataBase.cycles.isEmpty) {
-      // Load the cycles data (could be empty still)
-      NsunsDataBase.loadCycles();
-
-      // Update the state
-      refresh();
-    }
-
-    // If we don't have any excercises
-    if (NsunsDataBase.excercises.isEmpty) {
-      // Try and load the excercises
-      NsunsDataBase.loadExcercises();
-
-      // update the state
-      refresh();
-    }
-
     // Call the method
     super.initState();
 
     // Show the setup after build if we don't have excercises
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Add Your Code here.
       // if after trying to load excercises there are still none, navigate to the setup screen
-      if (NsunsDataBase.excercises.isEmpty) {
+      if (Boxes.getExercises().isEmpty) {
         Navigator.pushNamed(
           context,
           SetupPage.routeName,
@@ -55,35 +52,37 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    List<Widget> cycleTiles = NsunsDataBase.cycles
-        .map((cycle) => CycleTile(
-              cycle: cycle,
-              key: UniqueKey(),
-              refresh: refresh,
-            ))
-        .toList();
+  void dispose() {
+    Hive.box('cycles').close();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       drawer: const NavigationDrawer(),
-      body: Center(
-        child: Column(
-          children: cycleTiles,
-        ),
+      body: ValueListenableBuilder<Box<Cycle>>(
+        valueListenable: Boxes.getCycles().listenable(),
+        builder: (context, box, _) {
+          final cycles = box.values.toList().cast<Cycle>();
+
+          return Center(
+            child: Column(
+              children: [...cycles.map((cycle) => CycleTile(cycle: cycle))],
+            ),
+          );
+        },
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
+        children: const [
           FloatingActionButton(
-            onPressed: () {
-              NsunsDataBase.addCycle();
-              refresh();
-            },
+            onPressed: addCycle,
             tooltip: 'Add Cycle',
-            child: const Icon(Icons.add),
+            child: Icon(Icons.add),
           ),
         ],
       ),

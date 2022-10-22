@@ -6,41 +6,35 @@ part of 'Set.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class SetAdapter extends TypeAdapter<Set> {
+class CycleAdapter extends TypeAdapter<Cycle> {
   @override
-  final int typeId = 2;
+  final int typeId = 1;
 
   @override
-  Set read(BinaryReader reader) {
+  Cycle read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Set(
-      complete: fields[0] as bool,
-      reps: fields[1] as int,
-      excercise: fields[2] as Excercise,
-      percentage: fields[3] as double,
-      amrap: fields[4] as bool,
-    )..repsComplete = fields[5] as int;
+    return Cycle()
+      ..reps = fields[0] as int
+      ..percentage = fields[1] as num
+      ..isAmrap = fields[2] as bool
+      ..isComplete = fields[3] as bool;
   }
 
   @override
-  void write(BinaryWriter writer, Set obj) {
+  void write(BinaryWriter writer, Cycle obj) {
     writer
-      ..writeByte(6)
-      ..writeByte(0)
-      ..write(obj.complete)
-      ..writeByte(1)
-      ..write(obj.reps)
-      ..writeByte(2)
-      ..write(obj.excercise)
-      ..writeByte(3)
-      ..write(obj.percentage)
       ..writeByte(4)
-      ..write(obj.amrap)
-      ..writeByte(5)
-      ..write(obj.repsComplete);
+      ..writeByte(0)
+      ..write(obj.reps)
+      ..writeByte(1)
+      ..write(obj.percentage)
+      ..writeByte(2)
+      ..write(obj.isAmrap)
+      ..writeByte(3)
+      ..write(obj.isComplete);
   }
 
   @override
@@ -49,7 +43,7 @@ class SetAdapter extends TypeAdapter<Set> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SetAdapter &&
+      other is CycleAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

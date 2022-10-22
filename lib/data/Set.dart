@@ -1,28 +1,14 @@
 import 'package:hive/hive.dart';
-import 'Excercise.dart';
-
 part 'Set.g.dart';
 
-@HiveType(typeId: 2)
-class Set {
+@HiveType(typeId: 1)
+class Cycle extends HiveObject {
   @HiveField(0)
-  bool complete;
+  late int reps;
   @HiveField(1)
-  int reps;
+  late num percentage;
   @HiveField(2)
-  Excercise excercise;
+  late bool isAmrap;
   @HiveField(3)
-  double percentage;
-  @HiveField(4)
-  bool amrap;
-  @HiveField(5)
-  int repsComplete = 0;
-
-  Set({
-    required this.complete,
-    required this.reps,
-    required this.excercise,
-    required this.percentage,
-    this.amrap = false,
-  });
+  late bool isComplete = false;
 }

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nsuns/data/Cycle.dart';
-import 'package:nsuns/data/Database.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:nsuns/pages/cycle_page.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class CycleTile extends StatelessWidget {
   final Cycle cycle;
-  final Function() refresh;
-  CycleTile({super.key, required this.cycle, required this.refresh});
+  const CycleTile({super.key, required this.cycle});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +17,7 @@ class CycleTile extends StatelessWidget {
                 context,
                 CyclePage.routeName,
                 arguments: {
-                  'cycleUuid': cycle.uuid,
+                  'cycleId': cycle.uuid,
                 },
               )
             }),
@@ -30,8 +28,9 @@ class CycleTile extends StatelessWidget {
             extentRatio: 0.2,
             children: [
               SlidableAction(
-                onPressed: ((context) =>
-                    {NsunsDataBase.removeCycle(cycle), refresh()}),
+                onPressed: ((context) {
+                  cycle.delete();
+                }),
                 backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
                 borderRadius: const BorderRadius.only(
@@ -58,8 +57,8 @@ class CycleTile extends StatelessWidget {
                 child: CircularPercentIndicator(
                   radius: 20,
                   lineWidth: 2.5,
-                  center: Text(
-                    '${(cycle.percentageComplete * 100).round().toString()}%',
+                  center: const Text(
+                    'The Cycle Percentage Complete%',
                     textScaleFactor: .75,
                   ),
                 ),
