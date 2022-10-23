@@ -57,8 +57,8 @@ class CycleTile extends StatelessWidget {
                 child: CircularPercentIndicator(
                   radius: 20,
                   lineWidth: 2.5,
-                  center: const Text(
-                    'The Cycle Percentage Complete%',
+                  center: Text(
+                    '${cycle.getPercentageComplete()}%',
                     textScaleFactor: .75,
                   ),
                 ),

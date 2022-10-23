@@ -6,27 +6,29 @@ part of 'Set.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class CycleAdapter extends TypeAdapter<Cycle> {
+class SetAdapter extends TypeAdapter<Set> {
   @override
-  final int typeId = 1;
+  final int typeId = 3;
 
   @override
-  Cycle read(BinaryReader reader) {
+  Set read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Cycle()
+    return Set()
       ..reps = fields[0] as int
-      ..percentage = fields[1] as num
+      ..percentage = fields[1] as num?
       ..isAmrap = fields[2] as bool
-      ..isComplete = fields[3] as bool;
+      ..repsCompleted = fields[3] as num
+      ..isComplete = fields[4] as bool
+      ..weight = fields[5] as num?;
   }
 
   @override
-  void write(BinaryWriter writer, Cycle obj) {
+  void write(BinaryWriter writer, Set obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.reps)
       ..writeByte(1)
@@ -34,7 +36,11 @@ class CycleAdapter extends TypeAdapter<Cycle> {
       ..writeByte(2)
       ..write(obj.isAmrap)
       ..writeByte(3)
-      ..write(obj.isComplete);
+      ..write(obj.repsCompleted)
+      ..writeByte(4)
+      ..write(obj.isComplete)
+      ..writeByte(5)
+      ..write(obj.weight);
   }
 
   @override
@@ -43,7 +49,7 @@ class CycleAdapter extends TypeAdapter<Cycle> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CycleAdapter &&
+      other is SetAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

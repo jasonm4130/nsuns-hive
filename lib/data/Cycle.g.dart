@@ -18,17 +18,23 @@ class CycleAdapter extends TypeAdapter<Cycle> {
     };
     return Cycle()
       ..uuid = fields[0] as String
-      ..startDate = fields[1] as DateTime;
+      ..startDate = fields[1] as DateTime
+      ..exercises = (fields[2] as List).cast<Exercise>()
+      ..days = (fields[3] as List).cast<Day>();
   }
 
   @override
   void write(BinaryWriter writer, Cycle obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.uuid)
       ..writeByte(1)
-      ..write(obj.startDate);
+      ..write(obj.startDate)
+      ..writeByte(2)
+      ..write(obj.exercises)
+      ..writeByte(3)
+      ..write(obj.days);
   }
 
   @override

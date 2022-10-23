@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:nsuns/components/settings_section.dart';
 import 'package:nsuns/data/Boxes.dart';
 import 'package:nsuns/data/Exercise.dart';
 import 'package:nsuns/pages/home_page.dart';
 import 'package:nsuns/utils/decimal_text_input_formatter.dart';
+import 'package:nsuns/utils/decorators.dart';
 import 'package:uuid/uuid.dart';
 
 class SetupPage extends StatefulWidget {
@@ -12,98 +13,6 @@ class SetupPage extends StatefulWidget {
 
   @override
   State<SetupPage> createState() => SetupPageState();
-}
-
-TextStyle headingStyle = const TextStyle(
-  fontSize: 18,
-  fontWeight: FontWeight.bold,
-);
-
-InputDecoration dropdownDecorator({String? labelText}) => InputDecoration(
-      border: const OutlineInputBorder(),
-      labelText: labelText,
-      contentPadding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-    );
-
-InputDecoration textFieldDecorator({String? labelText}) => InputDecoration(
-      labelText: labelText,
-      border: const OutlineInputBorder(),
-      contentPadding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-    );
-
-class UnitsSection extends StatelessWidget {
-  final String units;
-  final num? rounding;
-  final Function setUnits;
-  final Function setRounding;
-  const UnitsSection({
-    required this.units,
-    required this.rounding,
-    required this.setUnits,
-    required this.setRounding,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Units & Rounding',
-          style: headingStyle,
-        ),
-        const SizedBox(height: 10),
-        DropdownButtonFormField<String>(
-          decoration: dropdownDecorator(labelText: 'Units'),
-          isExpanded: true,
-          items: const [
-            DropdownMenuItem(
-              value: 'kg',
-              child: Text('kg'),
-            ),
-            DropdownMenuItem(
-              value: 'lb',
-              child: Text('lb'),
-            ),
-          ],
-          value: units,
-          onChanged: (value) {
-            setUnits(value);
-          },
-          onSaved: (newValue) {
-            setUnits(newValue);
-          },
-        ),
-        const SizedBox(height: 10),
-        DropdownButtonFormField<String>(
-          decoration: dropdownDecorator(labelText: 'Rounding'),
-          isExpanded: true,
-          items: const [
-            DropdownMenuItem(
-              value: '1.25',
-              child: Text('1.25'),
-            ),
-            DropdownMenuItem(
-              value: '2.5',
-              child: Text('2.5'),
-            ),
-            DropdownMenuItem(
-              value: '5',
-              child: Text('5'),
-            ),
-          ],
-          value: rounding.toString(),
-          onChanged: (value) {
-            setRounding(value);
-          },
-          onSaved: (newValue) {
-            setRounding(newValue);
-          },
-        ),
-      ],
-    );
-  }
 }
 
 class ExerciseSection extends StatelessWidget {
@@ -137,7 +46,7 @@ class ExerciseSection extends StatelessWidget {
         TextFormField(
           decoration: textFieldDecorator(labelText: "$title TM"),
           keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          inputFormatters: [DecimalTextInputFormatter(decimalRange: 2)],
           initialValue: trainingMax?.toString(),
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -216,6 +125,13 @@ class SetupPageState extends State<SetupPage> {
   num? overheadPressScaleFactor = 0.65;
   String units = "kg";
   num? rounding = 2.5;
+  String template = '4 Day';
+  Map progression = {
+    '0-1': 0,
+    '2-3': 2.5,
+    '4-5': 5,
+    '6+': 7.5,
+  };
 
   final _formKey = GlobalKey<FormState>();
 
@@ -236,14 +152,22 @@ class SetupPageState extends State<SetupPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  UnitsSection(
+                  SettingsSection(
                     units: units,
                     rounding: rounding,
+                    progression: progression,
+                    template: template,
                     setUnits: (value) {
                       units = value;
                     },
                     setRounding: (value) {
                       rounding = num.tryParse(value);
+                    },
+                    setProgression: (value) {
+                      progression = value;
+                    },
+                    setTemplate: (value) {
+                      template = value;
                     },
                   ),
                   const SizedBox(height: 20),
@@ -359,6 +283,24 @@ class SetupPageState extends State<SetupPage> {
                             // Get our box
                             final box = Boxes.getExercises();
 
+                            // Add our settings to the settings box
+                            if (rounding != null) {
+                              Boxes.addSetting(
+                                key: 'rounding',
+                                value: rounding,
+                              );
+                              Boxes.addSetting(
+                                key: 'units',
+                                value: units,
+                              );
+                              Boxes.addSetting(
+                                key: 'progression',
+                                value: progression,
+                              );
+                              Boxes.addSetting(
+                                  key: 'template', value: template);
+                            }
+
                             // Do a null check on our TM's before we try and add the excercises
                             if (benchTM != null &&
                                 squatTM != null &&
@@ -374,15 +316,14 @@ class SetupPageState extends State<SetupPage> {
                                 ..uuid = benchAccessoryUuid
                                 ..isAssistanceExcercise = true
                                 ..name = benchAccessoryName.toString()
-                                ..trainingMax = benchTM! * benchScaleFactor!
-                                ..assistanceExcercise = null
-                                ..estimatedOneRepMax = null;
+                                ..trainingMax = benchTM! * benchScaleFactor!;
 
                               Exercise bench = Exercise()
                                 ..uuid = benchUuid
                                 ..name = 'Bench Press'
                                 ..trainingMax = benchTM!
                                 ..isAssistanceExcercise = false
+                                ..assistanceScaleFactor = benchScaleFactor
                                 ..assistanceExcercise = benchAccessoryExercise
                                 ..estimatedOneRepMax = benchTM! / 0.85;
 
@@ -391,15 +332,14 @@ class SetupPageState extends State<SetupPage> {
                                 ..uuid = squatAccessoryUuid
                                 ..isAssistanceExcercise = true
                                 ..name = squatAccessoryName.toString()
-                                ..trainingMax = squatTM! * squatScaleFactor!
-                                ..assistanceExcercise = null
-                                ..estimatedOneRepMax = null;
+                                ..trainingMax = squatTM! * squatScaleFactor!;
 
                               Exercise squat = Exercise()
                                 ..uuid = squatUuid
                                 ..name = 'Squat'
                                 ..trainingMax = squatTM!
                                 ..isAssistanceExcercise = false
+                                ..assistanceScaleFactor = squatScaleFactor
                                 ..assistanceExcercise = squatAccessoryExercise
                                 ..estimatedOneRepMax = squatTM! / 0.85;
 
@@ -409,15 +349,14 @@ class SetupPageState extends State<SetupPage> {
                                 ..isAssistanceExcercise = true
                                 ..name = deadliftAccessoryName.toString()
                                 ..trainingMax =
-                                    deadliftTM! * deadliftScaleFactor!
-                                ..assistanceExcercise = null
-                                ..estimatedOneRepMax = null;
+                                    deadliftTM! * deadliftScaleFactor!;
 
                               Exercise deadlift = Exercise()
                                 ..uuid = deadliftUuid
                                 ..name = 'Deadlift'
                                 ..trainingMax = deadliftTM!
                                 ..isAssistanceExcercise = false
+                                ..assistanceScaleFactor = deadliftScaleFactor
                                 ..assistanceExcercise =
                                     deadliftAccessoryExercise
                                 ..estimatedOneRepMax = deadliftTM! * 0.85;
@@ -431,6 +370,7 @@ class SetupPageState extends State<SetupPage> {
                                         overheadPressAccessoryName.toString()
                                     ..trainingMax = overheadPressTM! *
                                         overheadPressScaleFactor!
+                                    ..assistanceScaleFactor = null
                                     ..assistanceExcercise = null
                                     ..estimatedOneRepMax = null;
 
@@ -439,6 +379,8 @@ class SetupPageState extends State<SetupPage> {
                                 ..name = 'Overhead Press'
                                 ..trainingMax = overheadPressTM!
                                 ..isAssistanceExcercise = false
+                                ..assistanceScaleFactor =
+                                    overheadPressScaleFactor
                                 ..assistanceExcercise =
                                     overheadPressAccessoryExercise
                                 ..estimatedOneRepMax = overheadPressTM! / 0.85;

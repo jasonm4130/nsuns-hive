@@ -4,6 +4,7 @@ import 'package:nsuns/components/cycle_tile.dart';
 import 'package:nsuns/components/navigation_drawer.dart';
 import 'package:nsuns/data/Cycle.dart';
 import 'package:nsuns/pages/setup_page.dart';
+import 'package:nsuns/utils/consts.dart';
 import 'package:nsuns/utils/start_of_week.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,10 +20,14 @@ class HomePage extends StatefulWidget {
 }
 
 Future addCycle() {
+  final String template = Boxes.getSetting(key: 'template');
   final String uuid = const Uuid().v4();
+
   final cycle = Cycle()
     ..uuid = uuid
-    ..startDate = startOfWeek();
+    ..startDate = startOfWeek()
+    ..exercises = Boxes.getExercises().values.toList()
+    ..days = templates[template]();
 
   // Get the cycles box
   final box = Boxes.getCycles();
@@ -30,10 +35,6 @@ Future addCycle() {
 }
 
 class _HomePageState extends State<HomePage> {
-  refresh() {
-    setState(() {});
-  }
-
   @override
   void initState() {
     // Call the method
