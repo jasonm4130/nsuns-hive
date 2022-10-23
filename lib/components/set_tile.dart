@@ -13,7 +13,7 @@ Widget getSlideAction({
     return SlidableAction(
       onPressed: (context) {
         set.toggleCompleteStatus();
-        cycle.save();
+        Boxes.getCycles().put(cycle.uuid, cycle);
       },
       backgroundColor: Colors.green,
       foregroundColor: Colors.white,
@@ -28,7 +28,7 @@ Widget getSlideAction({
     return SlidableAction(
       onPressed: (context) {
         set.toggleCompleteStatus();
-        cycle.save();
+        Boxes.getCycles().put(cycle.uuid, cycle);
       },
       backgroundColor: Colors.red,
       foregroundColor: Colors.white,

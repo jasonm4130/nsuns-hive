@@ -20,4 +20,30 @@ class Day extends HiveObject {
   late Map? accessories = null;
   @HiveField(6)
   late List<String> suggestedAccessories;
+
+  // Methods
+  getTotalSets() {
+    num totalSets = tOneSets.length + tTwoSets.length;
+    return totalSets;
+  }
+
+  getTOneCompleteSets() {
+    num totalCompleteSets = 0;
+    for (var set in tOneSets) {
+      if (set.isComplete) {
+        totalCompleteSets = totalCompleteSets + 1;
+      }
+    }
+    return totalCompleteSets;
+  }
+
+  getTTwoCompleteSets() {
+    num totalCompleteSets = 0;
+    for (var set in tTwoSets) {
+      if (set.isComplete) {
+        totalCompleteSets = totalCompleteSets + 1;
+      }
+    }
+    return totalCompleteSets;
+  }
 }

@@ -47,30 +47,33 @@ class Cycle extends HiveObject {
     }
   }
 
-  getPercentageComplete() {
+  getTotalSets() {
     num totalSets = 0;
-    num completedSets = 0;
-
-    // For all of the days in the cycle
     for (var day in days) {
-      {
-        // For all of the sets in the day
-        for (var set in day.tOneSets) {
-          // If the set is complete add one the the completed set
-          if (set.isComplete) {
-            completedSets = completedSets++;
-          }
-          // Always add one to the total sets
-          totalSets = totalSets++;
+      totalSets = totalSets + day.tOneSets.length;
+      totalSets = totalSets + day.tTwoSets.length;
+    }
+    return totalSets;
+  }
+
+  getTotalCompleteSets() {
+    num totalCompleteSets = 0;
+    for (var day in days) {
+      for (var set in day.tOneSets) {
+        if (set.isComplete) {
+          totalCompleteSets = totalCompleteSets + 1;
+        }
+      }
+      for (var set in day.tTwoSets) {
+        if (set.isComplete) {
+          totalCompleteSets = totalCompleteSets + 1;
         }
       }
     }
-    // If there are 0 completed sets, we just need to return 0
-    if (completedSets == 0) {
-      return 0;
-    }
+    return totalCompleteSets;
+  }
 
-    // Otherwise caculate the percantage of the cycle that has been completed
-    return (completedSets / totalSets) * 100;
+  getPercentageComplete() {
+    return getTotalCompleteSets() / getTotalSets();
   }
 }

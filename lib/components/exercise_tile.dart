@@ -21,20 +21,15 @@ class ExerciseTile extends StatelessWidget {
     required this.day,
   });
 
-  getCompletedSetCount() {
-    num completedSets = 0;
-    for (var set in sets) {
-      if (set.isComplete) {
-        completedSets = completedSets++;
-      }
-    }
-    return completedSets;
-  }
-
   @override
   Widget build(BuildContext context) {
-    num setsCompleted = getCompletedSetCount();
-    print("setsCompleted: $setsCompleted");
+    num completedSets = 0;
+    if (exerciseType == 'tOne') {
+      completedSets = day.getTOneCompleteSets();
+    }
+    if (exerciseType == 'tTwo') {
+      completedSets = day.getTTwoCompleteSets();
+    }
     return InkWell(
       onTap: () =>
           Navigator.pushNamed(context, ExercisePage.routeName, arguments: {
@@ -56,12 +51,12 @@ class ExerciseTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(exercise.name),
-                      Text("$setsCompleted of ${sets.length} sets finished"),
+                      Text("$completedSets of ${sets.length} sets finished"),
                       const SizedBox(
                         height: 10,
                       ),
                       LinearPercentIndicator(
-                        percent: setsCompleted / sets.length,
+                        percent: completedSets / sets.length,
                         lineHeight: 5,
                         barRadius: const Radius.circular(2.5),
                         padding: EdgeInsets.zero,
