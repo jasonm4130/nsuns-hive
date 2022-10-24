@@ -33,18 +33,24 @@ class _ExercisePageState extends State<ExercisePage> {
           final Day day = cycle.getDayFromId(key: arguments['dayId']);
           final String exerciseType = arguments['exerciseType'];
           Exercise? exercise;
+          Exercise? mainExercise;
           List<Set>? sets;
 
+          // If this is the t1 for the day get the t1 exercise
           if (exerciseType == 'tOne') {
             sets = day.tOneSets;
-            exercise = cycle.exercises
-                .firstWhere((element) => element.uuid == day.tOneExerciseId);
+            exercise = cycle.getExerciseById(key: day.tOneExerciseId);
           }
 
+          // If this is the t2 for the day get the t2 exercise
           if (exerciseType == 'tTwo') {
             sets = day.tTwoSets;
-            exercise = cycle.exercises
-                .firstWhere((element) => element.uuid == day.tTwoExerciseId);
+            exercise = cycle.getExerciseById(key: day.tTwoExerciseId);
+          }
+
+          // If this is an assistance exercise, get the main exercise
+          if (exercise!.isAssistanceExcercise) {
+            mainExercise = cycle.getExerciseById(key: exercise.mainExerciseId);
           }
 
           return SingleChildScrollView(
@@ -52,7 +58,7 @@ class _ExercisePageState extends State<ExercisePage> {
               children: [
                 const SizedBox(height: 10),
                 Text(
-                  exercise!.name,
+                  exercise.name,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -62,13 +68,16 @@ class _ExercisePageState extends State<ExercisePage> {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: TextFormField(
-                    decoration:
-                        textFieldDecorator(labelText: "${exercise.name} TM"),
+                    decoration: textFieldDecorator(
+                        labelText:
+                            "${mainExercise != null ? mainExercise.name : exercise.name} TM"),
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       DecimalTextInputFormatter(decimalRange: 2)
                     ],
-                    initialValue: exercise.trainingMax.toString(),
+                    initialValue: mainExercise != null
+                        ? mainExercise.trainingMax.toString()
+                        : exercise.trainingMax.toString(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a training max';
@@ -76,19 +85,36 @@ class _ExercisePageState extends State<ExercisePage> {
                       return null;
                     },
                     onChanged: (value) {
+                      // Get the exercise that we want to update (main if this is an accessory)
+                      Exercise exerciseToUpdate;
+                      if (mainExercise != null) {
+                        exerciseToUpdate = mainExercise;
+                      } else {
+                        exerciseToUpdate = exercise!;
+                      }
+
+                      // Get the main exercise array to update too
+                      Exercise? boxExerciseToUpdate =
+                          Boxes.getExercise(key: exerciseToUpdate.uuid);
+
                       // Check that the new value is actually a number
                       if (num.tryParse(value) != null) {
                         // Update the cycle exercise
-                        cycle.exercises
-                            .firstWhere((cycleExercise) =>
-                                cycleExercise.uuid == exercise?.uuid)
-                            .trainingMax = num.parse(value);
+                        exerciseToUpdate.trainingMax = num.parse(value);
+                        // Also update the exercise in the exercise box
+                        boxExerciseToUpdate?.trainingMax = num.parse(value);
+
+                        // Save the changes
                         cycle.save();
+                        boxExerciseToUpdate?.save();
                       } else {
-                        cycle.exercises
-                            .firstWhere((cycleExercise) =>
-                                cycleExercise.uuid == exercise?.uuid)
-                            .trainingMax = 0;
+                        // If the value isn't a valid training max, set the training max to 0
+                        exerciseToUpdate.trainingMax = 0;
+                        boxExerciseToUpdate?.trainingMax = 0;
+
+                        // Save the changes
+                        cycle.save();
+                        boxExerciseToUpdate?.save();
                       }
                     },
                   ),
@@ -98,7 +124,11 @@ class _ExercisePageState extends State<ExercisePage> {
                   (set) {
                     return SetTile(
                       set: set,
-                      trainingMax: exercise!.trainingMax,
+                      trainingMax: exercise!.isAssistanceExcercise
+                          ? cycle
+                              .getExerciseById(key: exercise.mainExerciseId)
+                              .trainingMax
+                          : exercise.trainingMax,
                       cycle: cycle,
                     );
                   },

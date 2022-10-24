@@ -8,10 +8,11 @@ class Exercise extends HiveObject {
   @HiveField(1)
   late String name;
   @HiveField(2)
-  late num trainingMax;
+  // ignore: avoid_init_to_null
+  late num? trainingMax = null;
   @HiveField(3)
   // ignore: avoid_init_to_null
-  late num? assistanceScaleFactor = null;
+  late num? scaleFactor = null;
   @HiveField(4)
   // ignore: avoid_init_to_null
   late String? assistanceExcerciseId = null;
@@ -21,11 +22,8 @@ class Exercise extends HiveObject {
   // ignore: avoid_init_to_null
   late num? estimatedOneRepMax = null;
   @HiveField(7)
-  // ignore: avoid_init_to_null
   late num? currentPR = 0;
-
-  // Methods
-  updateTrainingMax({required num trainingMax}) {
-    trainingMax = trainingMax;
-  }
+  @HiveField(8)
+  // ignore: avoid_init_to_null
+  late String? mainExerciseId = null;
 }

@@ -314,16 +314,16 @@ class SetupPageState extends State<SetupPage> {
                               // Bench
                               Exercise benchAccessoryExercise = Exercise()
                                 ..uuid = benchAccessoryUuid
+                                ..mainExerciseId = benchUuid
                                 ..isAssistanceExcercise = true
-                                ..name = benchAccessoryName.toString()
-                                ..trainingMax = benchTM! * benchScaleFactor!;
+                                ..scaleFactor = benchScaleFactor
+                                ..name = benchAccessoryName.toString();
 
                               Exercise bench = Exercise()
                                 ..uuid = benchUuid
                                 ..name = 'Bench Press'
                                 ..trainingMax = benchTM!
                                 ..isAssistanceExcercise = false
-                                ..assistanceScaleFactor = benchScaleFactor
                                 ..assistanceExcerciseId =
                                     benchAccessoryExercise.uuid
                                 ..estimatedOneRepMax = benchTM! / 0.85;
@@ -331,16 +331,16 @@ class SetupPageState extends State<SetupPage> {
                               // Squat
                               Exercise squatAccessoryExercise = Exercise()
                                 ..uuid = squatAccessoryUuid
+                                ..mainExerciseId = squatUuid
                                 ..isAssistanceExcercise = true
-                                ..name = squatAccessoryName.toString()
-                                ..trainingMax = squatTM! * squatScaleFactor!;
+                                ..scaleFactor = squatScaleFactor
+                                ..name = squatAccessoryName.toString();
 
                               Exercise squat = Exercise()
                                 ..uuid = squatUuid
                                 ..name = 'Squat'
                                 ..trainingMax = squatTM!
                                 ..isAssistanceExcercise = false
-                                ..assistanceScaleFactor = squatScaleFactor
                                 ..assistanceExcerciseId =
                                     squatAccessoryExercise.uuid
                                 ..estimatedOneRepMax = squatTM! / 0.85;
@@ -348,17 +348,16 @@ class SetupPageState extends State<SetupPage> {
                               // Deadlift
                               Exercise deadliftAccessoryExercise = Exercise()
                                 ..uuid = deadliftAccessoryUuid
+                                ..mainExerciseId = deadliftUuid
                                 ..isAssistanceExcercise = true
-                                ..name = deadliftAccessoryName.toString()
-                                ..trainingMax =
-                                    deadliftTM! * deadliftScaleFactor!;
+                                ..scaleFactor = deadliftScaleFactor
+                                ..name = deadliftAccessoryName.toString();
 
                               Exercise deadlift = Exercise()
                                 ..uuid = deadliftUuid
                                 ..name = 'Deadlift'
                                 ..trainingMax = deadliftTM!
                                 ..isAssistanceExcercise = false
-                                ..assistanceScaleFactor = deadliftScaleFactor
                                 ..assistanceExcerciseId =
                                     deadliftAccessoryExercise.uuid
                                 ..estimatedOneRepMax = deadliftTM! * 0.85;
@@ -367,19 +366,17 @@ class SetupPageState extends State<SetupPage> {
                               Exercise overheadPressAccessoryExercise =
                                   Exercise()
                                     ..uuid = overheadPressAccessoryUuid
+                                    ..mainExerciseId = overheadPressUuid
                                     ..isAssistanceExcercise = true
+                                    ..scaleFactor = overheadPressScaleFactor
                                     ..name =
-                                        overheadPressAccessoryName.toString()
-                                    ..trainingMax = overheadPressTM! *
-                                        overheadPressScaleFactor!;
+                                        overheadPressAccessoryName.toString();
 
                               Exercise overheadPress = Exercise()
                                 ..uuid = overheadPressUuid
                                 ..name = 'Overhead Press'
                                 ..trainingMax = overheadPressTM!
                                 ..isAssistanceExcercise = false
-                                ..assistanceScaleFactor =
-                                    overheadPressScaleFactor
                                 ..assistanceExcerciseId =
                                     overheadPressAccessoryExercise.uuid
                                 ..estimatedOneRepMax = overheadPressTM! / 0.85;
@@ -390,6 +387,12 @@ class SetupPageState extends State<SetupPage> {
                                 squatUuid: squat,
                                 deadliftUuid: deadlift,
                                 overheadPressUuid: overheadPress,
+                                benchAccessoryUuid: benchAccessoryExercise,
+                                squatAccessoryUuid: squatAccessoryExercise,
+                                deadliftAccessoryUuid:
+                                    deadliftAccessoryExercise,
+                                overheadPressAccessoryUuid:
+                                    overheadPressAccessoryExercise,
                               });
 
                               // After adding the excercises navigate to the home screen

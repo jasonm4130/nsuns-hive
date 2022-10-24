@@ -28,17 +28,27 @@ class Cycle extends HiveObject {
   updateExerciseUnits({required String unitsChangingTo}) {
     for (var exercise in exercises) {
       {
-        if (unitsChangingTo == 'kg') {
-          // Assume the units are already in lbs and convert to kgs
-          exercise.updateTrainingMax(
-              trainingMax: exercise.trainingMax * poundsToKilogramsMultiple);
-        }
-        if (unitsChangingTo == 'lbs') {
-          exercise.updateTrainingMax(
-              trainingMax: exercise.trainingMax * kilogramsToPoundsMultiple);
+        // Check that it's not an assistance exercise
+        if (!exercise.isAssistanceExcercise) {
+          if (unitsChangingTo == 'kg') {
+            // Assume the units are already in lbs and convert to kgs
+            exercise.trainingMax =
+                exercise.trainingMax! * poundsToKilogramsMultiple;
+          }
+          if (unitsChangingTo == 'lbs') {
+            exercise.trainingMax =
+                exercise.trainingMax! * kilogramsToPoundsMultiple;
+          }
         }
       }
     }
+  }
+
+  getExerciseById({required String? key}) {
+    if (key == null) {
+      return null;
+    }
+    return exercises.firstWhere((exercise) => exercise.uuid == key);
   }
 
   getTotalSets() {

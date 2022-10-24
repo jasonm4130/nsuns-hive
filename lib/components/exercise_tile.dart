@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nsuns/data/Boxes.dart';
 import 'package:nsuns/data/Cycle.dart';
 import 'package:nsuns/data/Day.dart';
 import 'package:nsuns/data/Exercise.dart';
@@ -24,14 +25,14 @@ class ExerciseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     num completedSets = 0;
-    Exercise exercise =
-        cycle.exercises.firstWhere((exercise) => exercise.uuid == exerciseId);
+    Exercise? exercise = Boxes.getExercise(key: exerciseId);
     if (exerciseType == 'tOne') {
       completedSets = day.getTOneCompleteSets();
     }
     if (exerciseType == 'tTwo') {
       completedSets = day.getTTwoCompleteSets();
     }
+
     return InkWell(
       onTap: () =>
           Navigator.pushNamed(context, ExercisePage.routeName, arguments: {
@@ -52,7 +53,7 @@ class ExerciseTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(exercise.name),
+                      Text(exercise!.name),
                       Text("$completedSets of ${sets.length} sets finished"),
                       const SizedBox(
                         height: 10,
