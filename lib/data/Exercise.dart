@@ -14,12 +14,15 @@ class Exercise extends HiveObject {
   late num? assistanceScaleFactor = null;
   @HiveField(4)
   // ignore: avoid_init_to_null
-  late Exercise? assistanceExcercise = null;
+  late String? assistanceExcerciseId = null;
   @HiveField(5)
   late bool isAssistanceExcercise = false;
   @HiveField(6)
   // ignore: avoid_init_to_null
   late num? estimatedOneRepMax = null;
+  @HiveField(7)
+  // ignore: avoid_init_to_null
+  late num? currentPR = 0;
 
   // Methods
   updateTrainingMax({required num trainingMax}) {

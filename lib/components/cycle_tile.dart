@@ -55,10 +55,11 @@ class CycleTile extends StatelessWidget {
               ),
               Expanded(
                 child: CircularPercentIndicator(
+                  percent: cycle.getPercentageComplete(),
                   radius: 20,
                   lineWidth: 2.5,
                   center: Text(
-                    '${cycle.getPercentageComplete().toStringAsFixed(1)}%',
+                    '${(cycle.getPercentageComplete() * 100).toStringAsFixed(1)}%',
                     textScaleFactor: .75,
                   ),
                 ),

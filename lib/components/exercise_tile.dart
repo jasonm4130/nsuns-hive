@@ -7,14 +7,14 @@ import 'package:nsuns/pages/exercise_page.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class ExerciseTile extends StatelessWidget {
-  final Exercise exercise;
+  final String exerciseId;
   final String exerciseType;
   final List<Set> sets;
   final Day day;
   final Cycle cycle;
   const ExerciseTile({
     super.key,
-    required this.exercise,
+    required this.exerciseId,
     required this.exerciseType,
     required this.sets,
     required this.cycle,
@@ -24,6 +24,8 @@ class ExerciseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     num completedSets = 0;
+    Exercise exercise =
+        cycle.exercises.firstWhere((exercise) => exercise.uuid == exerciseId);
     if (exerciseType == 'tOne') {
       completedSets = day.getTOneCompleteSets();
     }

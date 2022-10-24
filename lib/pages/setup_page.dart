@@ -324,7 +324,8 @@ class SetupPageState extends State<SetupPage> {
                                 ..trainingMax = benchTM!
                                 ..isAssistanceExcercise = false
                                 ..assistanceScaleFactor = benchScaleFactor
-                                ..assistanceExcercise = benchAccessoryExercise
+                                ..assistanceExcerciseId =
+                                    benchAccessoryExercise.uuid
                                 ..estimatedOneRepMax = benchTM! / 0.85;
 
                               // Squat
@@ -340,7 +341,8 @@ class SetupPageState extends State<SetupPage> {
                                 ..trainingMax = squatTM!
                                 ..isAssistanceExcercise = false
                                 ..assistanceScaleFactor = squatScaleFactor
-                                ..assistanceExcercise = squatAccessoryExercise
+                                ..assistanceExcerciseId =
+                                    squatAccessoryExercise.uuid
                                 ..estimatedOneRepMax = squatTM! / 0.85;
 
                               // Deadlift
@@ -357,8 +359,8 @@ class SetupPageState extends State<SetupPage> {
                                 ..trainingMax = deadliftTM!
                                 ..isAssistanceExcercise = false
                                 ..assistanceScaleFactor = deadliftScaleFactor
-                                ..assistanceExcercise =
-                                    deadliftAccessoryExercise
+                                ..assistanceExcerciseId =
+                                    deadliftAccessoryExercise.uuid
                                 ..estimatedOneRepMax = deadliftTM! * 0.85;
 
                               // Overhead Press
@@ -369,10 +371,7 @@ class SetupPageState extends State<SetupPage> {
                                     ..name =
                                         overheadPressAccessoryName.toString()
                                     ..trainingMax = overheadPressTM! *
-                                        overheadPressScaleFactor!
-                                    ..assistanceScaleFactor = null
-                                    ..assistanceExcercise = null
-                                    ..estimatedOneRepMax = null;
+                                        overheadPressScaleFactor!;
 
                               Exercise overheadPress = Exercise()
                                 ..uuid = overheadPressUuid
@@ -381,8 +380,8 @@ class SetupPageState extends State<SetupPage> {
                                 ..isAssistanceExcercise = false
                                 ..assistanceScaleFactor =
                                     overheadPressScaleFactor
-                                ..assistanceExcercise =
-                                    overheadPressAccessoryExercise
+                                ..assistanceExcerciseId =
+                                    overheadPressAccessoryExercise.uuid
                                 ..estimatedOneRepMax = overheadPressTM! / 0.85;
 
                               // Put our excercises into the box

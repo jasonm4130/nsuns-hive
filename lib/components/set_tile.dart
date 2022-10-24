@@ -30,14 +30,14 @@ Widget getSlideAction({
         set.toggleCompleteStatus();
         Boxes.getCycles().put(cycle.uuid, cycle);
       },
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.orange,
       foregroundColor: Colors.white,
       borderRadius: const BorderRadius.only(
         topRight: Radius.circular(6),
         bottomRight: Radius.circular(6),
       ),
-      icon: Icons.delete,
-      label: 'Delete',
+      icon: Icons.undo,
+      label: 'Undo',
     );
   }
 }
@@ -55,7 +55,6 @@ class SetTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(set.isComplete);
     return Card(
       child: InkWell(
         onTap: () {
@@ -80,12 +79,26 @@ class SetTile extends StatelessWidget {
             verticalDirection: VerticalDirection.down,
             children: [
               Expanded(
-                flex: 5,
                 child: ListTile(
-                  title: Text("${set.reps} x ${roundToIncrement(
-                    increment: Boxes.getSetting(key: 'rounding'),
-                    numberToRound: set.percentage! * trainingMax,
-                  )}"),
+                  title: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          "${set.reps}${set.isAmrap ? '+' : ''} reps at ${roundToIncrement(
+                        increment: Boxes.getSetting(key: 'rounding'),
+                        numberToRound: set.percentage! * trainingMax,
+                      )} ${Boxes.getSetting(key: 'units')}"),
+                      Text(
+                        "${set.percentage! * 100}% of training max",
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  trailing: Icon(
+                    Icons.check,
+                    color: set.isComplete ? Colors.green : Colors.grey,
+                  ),
                 ),
               ),
             ],

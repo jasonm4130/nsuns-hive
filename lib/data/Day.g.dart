@@ -18,8 +18,8 @@ class DayAdapter extends TypeAdapter<Day> {
     };
     return Day()
       ..uuid = fields[0] as String
-      ..tOneExercise = fields[1] as Exercise
-      ..tTwoExercise = fields[2] as Exercise
+      ..tOneExerciseId = fields[1] as String
+      ..tTwoExerciseId = fields[2] as String
       ..tOneSets = (fields[3] as List).cast<Set>()
       ..tTwoSets = (fields[4] as List).cast<Set>()
       ..accessories = (fields[5] as Map?)?.cast<dynamic, dynamic>()
@@ -33,9 +33,9 @@ class DayAdapter extends TypeAdapter<Day> {
       ..writeByte(0)
       ..write(obj.uuid)
       ..writeByte(1)
-      ..write(obj.tOneExercise)
+      ..write(obj.tOneExerciseId)
       ..writeByte(2)
-      ..write(obj.tTwoExercise)
+      ..write(obj.tTwoExerciseId)
       ..writeByte(3)
       ..write(obj.tOneSets)
       ..writeByte(4)

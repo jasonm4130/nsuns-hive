@@ -32,16 +32,10 @@ class Cycle extends HiveObject {
           // Assume the units are already in lbs and convert to kgs
           exercise.updateTrainingMax(
               trainingMax: exercise.trainingMax * poundsToKilogramsMultiple);
-          exercise.assistanceExcercise!.updateTrainingMax(
-              trainingMax: exercise.assistanceExcercise!.trainingMax *
-                  poundsToKilogramsMultiple);
         }
         if (unitsChangingTo == 'lbs') {
           exercise.updateTrainingMax(
               trainingMax: exercise.trainingMax * kilogramsToPoundsMultiple);
-          exercise.assistanceExcercise!.updateTrainingMax(
-              trainingMax: exercise.assistanceExcercise!.trainingMax *
-                  kilogramsToPoundsMultiple);
         }
       }
     }

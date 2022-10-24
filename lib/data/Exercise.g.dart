@@ -21,15 +21,16 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
       ..name = fields[1] as String
       ..trainingMax = fields[2] as num
       ..assistanceScaleFactor = fields[3] as num?
-      ..assistanceExcercise = fields[4] as Exercise?
+      ..assistanceExcerciseId = fields[4] as String?
       ..isAssistanceExcercise = fields[5] as bool
-      ..estimatedOneRepMax = fields[6] as num?;
+      ..estimatedOneRepMax = fields[6] as num?
+      ..currentPR = fields[7] as num?;
   }
 
   @override
   void write(BinaryWriter writer, Exercise obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.uuid)
       ..writeByte(1)
@@ -39,11 +40,13 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
       ..writeByte(3)
       ..write(obj.assistanceScaleFactor)
       ..writeByte(4)
-      ..write(obj.assistanceExcercise)
+      ..write(obj.assistanceExcerciseId)
       ..writeByte(5)
       ..write(obj.isAssistanceExcercise)
       ..writeByte(6)
-      ..write(obj.estimatedOneRepMax);
+      ..write(obj.estimatedOneRepMax)
+      ..writeByte(7)
+      ..write(obj.currentPR);
   }
 
   @override

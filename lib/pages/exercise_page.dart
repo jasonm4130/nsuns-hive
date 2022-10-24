@@ -6,6 +6,8 @@ import 'package:nsuns/data/Cycle.dart';
 import 'package:nsuns/data/Day.dart';
 import 'package:nsuns/data/Set.dart';
 import 'package:nsuns/data/Exercise.dart';
+import 'package:nsuns/utils/decimal_text_input_formatter.dart';
+import 'package:nsuns/utils/decorators.dart';
 
 class ExercisePage extends StatefulWidget {
   const ExercisePage({super.key});
@@ -35,34 +37,74 @@ class _ExercisePageState extends State<ExercisePage> {
 
           if (exerciseType == 'tOne') {
             sets = day.tOneSets;
-            exercise = day.tOneExercise;
+            exercise = cycle.exercises
+                .firstWhere((element) => element.uuid == day.tOneExerciseId);
           }
 
           if (exerciseType == 'tTwo') {
             sets = day.tTwoSets;
-            exercise = day.tTwoExercise;
+            exercise = cycle.exercises
+                .firstWhere((element) => element.uuid == day.tTwoExerciseId);
           }
 
-          return Column(
-            children: [
-              const SizedBox(height: 10),
-              Text(
-                exercise!.name,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Text(
+                  exercise!.name,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              ...sets!.map(
-                (set) {
-                  return SetTile(
-                    set: set,
-                    trainingMax: exercise!.trainingMax,
-                    cycle: cycle,
-                  );
-                },
-              )
-            ],
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    decoration:
+                        textFieldDecorator(labelText: "${exercise.name} TM"),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      DecimalTextInputFormatter(decimalRange: 2)
+                    ],
+                    initialValue: exercise.trainingMax.toString(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a training max';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      // Check that the new value is actually a number
+                      if (num.tryParse(value) != null) {
+                        // Update the cycle exercise
+                        cycle.exercises
+                            .firstWhere((cycleExercise) =>
+                                cycleExercise.uuid == exercise?.uuid)
+                            .trainingMax = num.parse(value);
+                        cycle.save();
+                      } else {
+                        cycle.exercises
+                            .firstWhere((cycleExercise) =>
+                                cycleExercise.uuid == exercise?.uuid)
+                            .trainingMax = 0;
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ...sets!.map(
+                  (set) {
+                    return SetTile(
+                      set: set,
+                      trainingMax: exercise!.trainingMax,
+                      cycle: cycle,
+                    );
+                  },
+                )
+              ],
+            ),
           );
         },
       ),

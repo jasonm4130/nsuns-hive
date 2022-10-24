@@ -23,10 +23,6 @@ void updateUnits({required String units}) {
     // Update the exercise training max
     exercise.updateTrainingMax(trainingMax: newTrainigMax);
 
-    // Update the assistance training max
-    exercise.assistanceExcercise!.updateTrainingMax(
-        trainingMax: newTrainigMax * exercise.assistanceScaleFactor!);
-
     // Save the exercise
     exercise.save();
   });

@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:nsuns/data/Exercise.dart';
 import 'package:nsuns/data/Set.dart';
 part 'Day.g.dart';
 
@@ -8,9 +7,9 @@ class Day extends HiveObject {
   @HiveField(0)
   late String uuid;
   @HiveField(1)
-  late Exercise tOneExercise;
+  late String tOneExerciseId;
   @HiveField(2)
-  late Exercise tTwoExercise;
+  late String tTwoExerciseId;
   @HiveField(3)
   late List<Set> tOneSets;
   @HiveField(4)

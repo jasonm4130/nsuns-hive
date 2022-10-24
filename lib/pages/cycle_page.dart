@@ -66,14 +66,14 @@ class _CyclePageState extends State<CyclePage> {
                                   ),
                                 ),
                                 ExerciseTile(
-                                  exercise: day.tOneExercise,
+                                  exerciseId: day.tOneExerciseId,
                                   exerciseType: 'tOne',
                                   sets: day.tOneSets,
                                   day: day,
                                   cycle: cycle,
                                 ),
                                 ExerciseTile(
-                                  exercise: day.tTwoExercise,
+                                  exerciseId: day.tTwoExerciseId,
                                   exerciseType: 'tTwo',
                                   sets: day.tTwoSets,
                                   day: day,
