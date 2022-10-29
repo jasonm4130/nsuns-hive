@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:hive/hive.dart';
 import 'package:nsuns/data/TrainingMax.dart';
 part 'Exercise.g.dart';
@@ -27,4 +28,11 @@ class Exercise extends HiveObject {
   // Training max at specific date
   @HiveField(8)
   late List<TrainingMax> trainingMaxData = [];
+
+  // methods
+  TrainingMax? getTrainMaxByCycleId({required String id}) {
+    // Get the training max with the current cycle id
+    return trainingMaxData
+        .firstWhereOrNull((trainingMax) => trainingMax.linkedCycleUuid == id);
+  }
 }

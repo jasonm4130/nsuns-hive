@@ -124,8 +124,8 @@ class SetTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final num setWeight = roundToIncrement(
       increment: Boxes.getSetting(key: 'rounding'),
-      numberToRound:
-          set.percentage! * exercise.trainingMaxData.last.trainingMax,
+      numberToRound: set.percentage! *
+          exercise.getTrainMaxByCycleId(id: cycle.uuid)!.trainingMax,
     );
     final num repsNeededForPR = caculateRepsNeededForNewPR(
             weight: setWeight, reps: set.reps, currentPR: exercise.currentPR!)
@@ -133,6 +133,9 @@ class SetTile extends StatelessWidget {
     final num currentPR = roundToIncrement(
         increment: Boxes.getSetting(key: 'rounding'),
         numberToRound: exercise.currentPR!);
+    final String repsString = set.isComplete && set.isAmrap
+        ? "${set.repsCompleted}"
+        : "${set.reps}${set.isAmrap ? '+' : ''}";
     return Card(
       child: InkWell(
         onTap: () {
@@ -165,7 +168,7 @@ class SetTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                          "${set.reps}${set.isAmrap ? '+' : ''} reps at $setWeight ${Boxes.getSetting(key: 'units')}"),
+                          "$repsString reps at $setWeight ${Boxes.getSetting(key: 'units')}"),
                       Text(
                         "${set.percentage! * 100}% of training max",
                         style: const TextStyle(fontSize: 12),
@@ -183,7 +186,7 @@ class SetTile extends StatelessWidget {
                   ),
                   trailing: Icon(
                     Icons.check,
-                    color: set.isComplete ? Colors.green : Colors.grey,
+                    color: set.isComplete ? Colors.green : Colors.grey[300],
                   ),
                 ),
               ),

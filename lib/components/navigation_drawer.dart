@@ -24,6 +24,16 @@ class NavigationDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(
+              Icons.insights,
+            ),
+            title: const Text('Progress'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, SettingsPage.routeName);
+            },
+          ),
+          ListTile(
+            leading: const Icon(
               Icons.settings,
             ),
             title: const Text('Settings'),

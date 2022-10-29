@@ -26,21 +26,23 @@ Future addCycle() {
   final String uuid = const Uuid().v4();
 
   // Get the cycles box
-  final box = Boxes.getCycles();
+  final cycles = Boxes.getCycles();
+  final exercises = Boxes.getExercises();
 
   // Because the boxes are a key value pair we can get the most recent cycle from the box
   Cycle? lastCycle;
-  if (box.length > 0) {
-    lastCycle = box.getAt(box.length - 1);
+  if (cycles.length > 0) {
+    // Get the list of cycles
+    lastCycle = cycles.values.toList().first;
   }
 
   // If there was a last cycle then we want to check if the execrcises were completed and progress if needed
   if (lastCycle != null) {
     // Loop through all our exercises
-    Boxes.getExercises().values.forEach((exercise) {
+    for (var exercise in exercises.values) {
       // Loop through our last cycle days
       List<Set> exerciseSets = [];
-      for (var day in lastCycle!.days) {
+      for (var day in lastCycle.days) {
         if (day.tOneExerciseId == exercise.uuid ||
             day.tOneExerciseId == exercise.assistanceExcerciseId) {
           exerciseSets = [...exerciseSets, ...day.tOneSets];
@@ -51,13 +53,12 @@ Future addCycle() {
         }
       }
 
-      // If all sets for the exercise are complete and all amrap sets hit the target reps and the exercise isn't an assistance exercise
       if (exerciseSets.every((set) => set.isComplete) &&
-          exerciseSets.where((set) => set.isAmrap).every((set) {
-            return set.repsCompleted >= set.reps;
-          }) &&
+          exerciseSets
+              .where((set) => set.isAmrap)
+              .every((set) => set.repsCompleted >= set.reps) &&
           !exercise.isAssistanceExcercise) {
-        // Get the amrap sets
+        // Get the amrap sets that has a target of 1
         Set? progressionSet = exerciseSets.firstWhereOrNull(
           (set) => set.isAmrap && set.reps == 1,
         );
@@ -77,7 +78,8 @@ Future addCycle() {
             TrainingMax()
               ..date = startOfWeek()
               ..trainingMax = exercise.trainingMaxData.last.trainingMax +
-                  progression[progressionKey],
+                  progression[progressionKey]
+              ..linkedCycleUuid = uuid,
           );
         } else {
           // If there is no progression set, we should progress the exercise by the minimum progression set
@@ -86,12 +88,25 @@ Future addCycle() {
               ..date = startOfWeek()
               ..trainingMax = exercise.trainingMaxData.last.trainingMax +
                   progression.values
-                      .firstWhere((ammountToProgress) => ammountToProgress > 0),
+                      .firstWhere((ammountToProgress) => ammountToProgress > 0)
+              ..linkedCycleUuid = uuid,
           );
         }
         exercise.save();
       }
-    });
+    }
+  } else {
+    // If there is no last cycle (because this is the first cycle to be added)
+    for (var exercise in exercises.values) {
+      if (exercise.trainingMaxData.isNotEmpty) {
+        TrainingMax newTrainingMaxInstance = TrainingMax()
+          ..date = startOfWeek()
+          ..trainingMax = exercise.trainingMaxData.last.trainingMax
+          ..linkedCycleUuid = uuid;
+        exercise.trainingMaxData.add(newTrainingMaxInstance);
+        exercise.save();
+      }
+    }
   }
 
   final cycle = Cycle()
@@ -99,7 +114,7 @@ Future addCycle() {
     ..startDate = startOfWeek()
     ..days = templates[template]();
 
-  return box.put(uuid, cycle);
+  return cycles.put(uuid, cycle);
 }
 
 class _HomePageState extends State<HomePage> {
@@ -136,7 +151,7 @@ class _HomePageState extends State<HomePage> {
       body: ValueListenableBuilder<Box<Cycle>>(
         valueListenable: Boxes.getCycles().listenable(),
         builder: (context, box, _) {
-          final cycles = box.values.toList().cast<Cycle>();
+          final cycles = box.values.toList();
 
           return Center(
             child: Column(

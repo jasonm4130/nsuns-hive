@@ -79,9 +79,13 @@ class _ExercisePageState extends State<ExercisePage> {
                           DecimalTextInputFormatter(decimalRange: 2)
                         ],
                         initialValue: mainExercise != null
-                            ? mainExercise.trainingMaxData.last.trainingMax
+                            ? mainExercise
+                                .getTrainMaxByCycleId(id: cycle.uuid)!
+                                .trainingMax
                                 .toString()
-                            : exercise.trainingMaxData.last.trainingMax
+                            : exercise
+                                .getTrainMaxByCycleId(id: cycle.uuid)!
+                                .trainingMax
                                 .toString(),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -98,21 +102,19 @@ class _ExercisePageState extends State<ExercisePage> {
                             exerciseToUpdate = exercise!;
                           }
 
-                          // Get the main exercise array to update too
-                          Exercise? boxExerciseToUpdate =
-                              Boxes.getExercise(key: exerciseToUpdate.uuid);
-
                           // Check that the new value is actually a number
                           if (num.tryParse(value) != null) {
                             // Update the cycle exercise
-                            exerciseToUpdate.trainingMaxData.last.trainingMax =
-                                num.parse(value);
+                            exerciseToUpdate
+                                .getTrainMaxByCycleId(id: cycle.uuid)
+                                ?.trainingMax = num.parse(value);
                             // Save the changes
                             exerciseToUpdate.save();
                           } else {
                             // If the value isn't a valid training max, set the training max to 0
-                            exerciseToUpdate.trainingMaxData.last.trainingMax =
-                                0;
+                            exerciseToUpdate
+                                .getTrainMaxByCycleId(id: cycle.uuid)
+                                ?.trainingMax = 0;
 
                             // Save the changes
                             exerciseToUpdate.save();

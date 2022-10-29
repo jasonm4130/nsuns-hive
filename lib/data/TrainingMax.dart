@@ -7,4 +7,7 @@ class TrainingMax extends HiveObject {
   late num trainingMax;
   @HiveField(1)
   late DateTime date;
+  @HiveField(2)
+  // ignore: avoid_init_to_null
+  late String? linkedCycleUuid = null;
 }

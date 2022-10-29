@@ -18,17 +18,20 @@ class TrainingMaxAdapter extends TypeAdapter<TrainingMax> {
     };
     return TrainingMax()
       ..trainingMax = fields[0] as num
-      ..date = fields[1] as DateTime;
+      ..date = fields[1] as DateTime
+      ..linkedCycleUuid = fields[2] as String?;
   }
 
   @override
   void write(BinaryWriter writer, TrainingMax obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.trainingMax)
       ..writeByte(1)
-      ..write(obj.date);
+      ..write(obj.date)
+      ..writeByte(2)
+      ..write(obj.linkedCycleUuid);
   }
 
   @override

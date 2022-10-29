@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nsuns/data/Boxes.dart';
 import 'package:nsuns/data/Cycle.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:nsuns/pages/cycle_page.dart';
@@ -29,6 +30,19 @@ class CycleTile extends StatelessWidget {
             children: [
               SlidableAction(
                 onPressed: ((context) {
+                  // loop through the exercises
+                  Boxes.getExercises().values.forEach((exercise) {
+                    // Filter out any training maxes linked to this cycle
+                    exercise.trainingMaxData = exercise.trainingMaxData
+                        .where(
+                          (trainingMax) =>
+                              trainingMax.linkedCycleUuid != cycle.uuid,
+                        )
+                        .toList();
+
+                    // After deleting the training max data save the exercise
+                    exercise.save();
+                  });
                   cycle.delete();
                 }),
                 backgroundColor: Colors.red,
