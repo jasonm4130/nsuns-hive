@@ -1,8 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:nsuns/data/Day.dart';
-import 'package:nsuns/data/Exercise.dart';
-import 'package:nsuns/utils/consts.dart';
 part 'Cycle.g.dart';
 
 @HiveType(typeId: 0)
@@ -12,8 +10,6 @@ class Cycle extends HiveObject {
   @HiveField(1)
   late DateTime startDate;
   @HiveField(2)
-  late List<Exercise> exercises;
-  @HiveField(3)
   late List<Day> days;
 
   // Methods
@@ -23,32 +19,6 @@ class Cycle extends HiveObject {
 
   getDayFromId({required String key}) {
     return days.firstWhere((day) => day.uuid == key);
-  }
-
-  updateExerciseUnits({required String unitsChangingTo}) {
-    for (var exercise in exercises) {
-      {
-        // Check that it's not an assistance exercise
-        if (!exercise.isAssistanceExcercise) {
-          if (unitsChangingTo == 'kg') {
-            // Assume the units are already in lbs and convert to kgs
-            exercise.trainingMax =
-                exercise.trainingMax! * poundsToKilogramsMultiple;
-          }
-          if (unitsChangingTo == 'lbs') {
-            exercise.trainingMax =
-                exercise.trainingMax! * kilogramsToPoundsMultiple;
-          }
-        }
-      }
-    }
-  }
-
-  getExerciseById({required String? key}) {
-    if (key == null) {
-      return null;
-    }
-    return exercises.firstWhere((exercise) => exercise.uuid == key);
   }
 
   getTotalSets() {

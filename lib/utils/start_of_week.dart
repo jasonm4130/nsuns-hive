@@ -1,6 +1,7 @@
-DateTime startOfWeek() {
-  DateTime now = DateTime.now();
-  int currentDay = now.weekday;
-  DateTime firstDayOfWeek = now.subtract(Duration(days: currentDay));
+DateTime startOfWeek({DateTime? date}) {
+  // If we didn't get a date use the current one
+  date ??= DateTime.now();
+  int currentDay = date.weekday;
+  DateTime firstDayOfWeek = date.subtract(Duration(days: currentDay));
   return firstDayOfWeek;
 }

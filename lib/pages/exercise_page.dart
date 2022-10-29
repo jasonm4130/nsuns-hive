@@ -26,113 +26,117 @@ class _ExercisePageState extends State<ExercisePage> {
       appBar: AppBar(
         title: const Text('Day'),
       ),
-      body: ValueListenableBuilder<Box<Cycle>>(
-        valueListenable: Boxes.getCycles().listenable(),
-        builder: (context, box, _) {
-          final Cycle cycle = Boxes.getCycle(key: arguments['cycleId']);
-          final Day day = cycle.getDayFromId(key: arguments['dayId']);
-          final String exerciseType = arguments['exerciseType'];
-          Exercise? exercise;
-          Exercise? mainExercise;
-          List<Set>? sets;
+      body: ValueListenableBuilder<Box<Exercise>>(
+        valueListenable: Boxes.getExercises().listenable(),
+        builder: (context, value, _) {
+          return ValueListenableBuilder<Box<Cycle>>(
+            valueListenable: Boxes.getCycles().listenable(),
+            builder: (context, box, _) {
+              final Cycle cycle = Boxes.getCycle(key: arguments['cycleId']);
+              final Day day = cycle.getDayFromId(key: arguments['dayId']);
+              final String exerciseType = arguments['exerciseType'];
+              Exercise? exercise;
+              Exercise? mainExercise;
+              List<Set>? sets;
 
-          // If this is the t1 for the day get the t1 exercise
-          if (exerciseType == 'tOne') {
-            sets = day.tOneSets;
-            exercise = cycle.getExerciseById(key: day.tOneExerciseId);
-          }
+              // If this is the t1 for the day get the t1 exercise
+              if (exerciseType == 'tOne') {
+                sets = day.tOneSets;
+                exercise = Boxes.getExercise(key: day.tOneExerciseId);
+              }
 
-          // If this is the t2 for the day get the t2 exercise
-          if (exerciseType == 'tTwo') {
-            sets = day.tTwoSets;
-            exercise = cycle.getExerciseById(key: day.tTwoExerciseId);
-          }
+              // If this is the t2 for the day get the t2 exercise
+              if (exerciseType == 'tTwo') {
+                sets = day.tTwoSets;
+                exercise = Boxes.getExercise(key: day.tTwoExerciseId);
+              }
 
-          // If this is an assistance exercise, get the main exercise
-          if (exercise!.isAssistanceExcercise) {
-            mainExercise = cycle.getExerciseById(key: exercise.mainExerciseId);
-          }
+              // If this is an assistance exercise, get the main exercise
+              if (exercise!.isAssistanceExcercise) {
+                mainExercise = Boxes.getExercise(key: exercise.mainExerciseId!);
+              }
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                Text(
-                  exercise.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      exercise.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextFormField(
+                        decoration: textFieldDecorator(
+                            labelText:
+                                "${mainExercise != null ? mainExercise.name : exercise.name} TM"),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          DecimalTextInputFormatter(decimalRange: 2)
+                        ],
+                        initialValue: mainExercise != null
+                            ? mainExercise.trainingMaxData.last.trainingMax
+                                .toString()
+                            : exercise.trainingMaxData.last.trainingMax
+                                .toString(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a training max';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          // Get the exercise that we want to update (main if this is an accessory)
+                          Exercise exerciseToUpdate;
+                          if (mainExercise != null) {
+                            exerciseToUpdate = mainExercise;
+                          } else {
+                            exerciseToUpdate = exercise!;
+                          }
+
+                          // Get the main exercise array to update too
+                          Exercise? boxExerciseToUpdate =
+                              Boxes.getExercise(key: exerciseToUpdate.uuid);
+
+                          // Check that the new value is actually a number
+                          if (num.tryParse(value) != null) {
+                            // Update the cycle exercise
+                            exerciseToUpdate.trainingMaxData.last.trainingMax =
+                                num.parse(value);
+                            // Save the changes
+                            exerciseToUpdate.save();
+                          } else {
+                            // If the value isn't a valid training max, set the training max to 0
+                            exerciseToUpdate.trainingMaxData.last.trainingMax =
+                                0;
+
+                            // Save the changes
+                            exerciseToUpdate.save();
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ...sets!.map(
+                      (set) {
+                        return SetTile(
+                          set: set,
+                          cycle: cycle,
+                          exercise: exercise!.isAssistanceExcercise
+                              ? Boxes.getExercise(
+                                  key: exercise.mainExerciseId!)!
+                              : exercise,
+                        );
+                      },
+                    )
+                  ],
                 ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    decoration: textFieldDecorator(
-                        labelText:
-                            "${mainExercise != null ? mainExercise.name : exercise.name} TM"),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      DecimalTextInputFormatter(decimalRange: 2)
-                    ],
-                    initialValue: mainExercise != null
-                        ? mainExercise.trainingMax.toString()
-                        : exercise.trainingMax.toString(),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a training max';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      // Get the exercise that we want to update (main if this is an accessory)
-                      Exercise exerciseToUpdate;
-                      if (mainExercise != null) {
-                        exerciseToUpdate = mainExercise;
-                      } else {
-                        exerciseToUpdate = exercise!;
-                      }
-
-                      // Get the main exercise array to update too
-                      Exercise? boxExerciseToUpdate =
-                          Boxes.getExercise(key: exerciseToUpdate.uuid);
-
-                      // Check that the new value is actually a number
-                      if (num.tryParse(value) != null) {
-                        // Update the cycle exercise
-                        exerciseToUpdate.trainingMax = num.parse(value);
-                        // Also update the exercise in the exercise box
-                        boxExerciseToUpdate?.trainingMax = num.parse(value);
-
-                        // Save the changes
-                        cycle.save();
-                        boxExerciseToUpdate?.save();
-                      } else {
-                        // If the value isn't a valid training max, set the training max to 0
-                        exerciseToUpdate.trainingMax = 0;
-                        boxExerciseToUpdate?.trainingMax = 0;
-
-                        // Save the changes
-                        cycle.save();
-                        boxExerciseToUpdate?.save();
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ...sets!.map(
-                  (set) {
-                    return SetTile(
-                      set: set,
-                      cycle: cycle,
-                      exercise: exercise!.isAssistanceExcercise
-                          ? cycle.getExerciseById(key: exercise.mainExerciseId)
-                          : exercise,
-                    );
-                  },
-                )
-              ],
-            ),
+              );
+            },
           );
         },
       ),

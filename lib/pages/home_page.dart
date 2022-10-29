@@ -4,6 +4,7 @@ import 'package:nsuns/components/cycle_tile.dart';
 import 'package:nsuns/components/navigation_drawer.dart';
 import 'package:nsuns/data/Cycle.dart';
 import 'package:nsuns/data/Set.dart';
+import 'package:nsuns/data/TrainingMax.dart';
 import 'package:nsuns/pages/setup_page.dart';
 import 'package:nsuns/utils/consts.dart';
 import 'package:nsuns/utils/start_of_week.dart';
@@ -50,11 +51,12 @@ Future addCycle() {
         }
       }
 
-      // If all sets for the exercise are complete and all amrap sets hit the target reps
+      // If all sets for the exercise are complete and all amrap sets hit the target reps and the exercise isn't an assistance exercise
       if (exerciseSets.every((set) => set.isComplete) &&
           exerciseSets.where((set) => set.isAmrap).every((set) {
             return set.repsCompleted >= set.reps;
-          })) {
+          }) &&
+          !exercise.isAssistanceExcercise) {
         // Get the amrap sets
         Set? progressionSet = exerciseSets.firstWhereOrNull(
           (set) => set.isAmrap && set.reps == 1,
@@ -69,14 +71,23 @@ Future addCycle() {
             (key) => key.contains(progressionSet.repsCompleted.toString()),
             orElse: () => "6+",
           );
+
           // Add the progression to the exercise and save it
-          exercise.trainingMax =
-              exercise.trainingMax! + progression[progressionKey];
+          exercise.trainingMaxData.add(
+            TrainingMax()
+              ..date = startOfWeek()
+              ..trainingMax = exercise.trainingMaxData.last.trainingMax +
+                  progression[progressionKey],
+          );
         } else {
           // If there is no progression set, we should progress the exercise by the minimum progression set
-          exercise.trainingMax = exercise.trainingMax! +
-              progression.values
-                  .firstWhere((ammountToProgress) => ammountToProgress > 0);
+          exercise.trainingMaxData.add(
+            TrainingMax()
+              ..date = startOfWeek()
+              ..trainingMax = exercise.trainingMaxData.last.trainingMax +
+                  progression.values
+                      .firstWhere((ammountToProgress) => ammountToProgress > 0),
+          );
         }
         exercise.save();
       }
@@ -86,7 +97,6 @@ Future addCycle() {
   final cycle = Cycle()
     ..uuid = uuid
     ..startDate = startOfWeek()
-    ..exercises = Boxes.getExercises().values.toList()
     ..days = templates[template]();
 
   return box.put(uuid, cycle);

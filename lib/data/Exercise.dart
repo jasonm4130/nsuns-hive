@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:nsuns/data/TrainingMax.dart';
 part 'Exercise.g.dart';
 
 @HiveType(typeId: 2)
@@ -9,21 +10,21 @@ class Exercise extends HiveObject {
   late String name;
   @HiveField(2)
   // ignore: avoid_init_to_null
-  late num? trainingMax = null;
+  late num? scaleFactor = null;
   @HiveField(3)
   // ignore: avoid_init_to_null
-  late num? scaleFactor = null;
-  @HiveField(4)
-  // ignore: avoid_init_to_null
   late String? assistanceExcerciseId = null;
-  @HiveField(5)
+  @HiveField(4)
   late bool isAssistanceExcercise = false;
-  @HiveField(6)
+  @HiveField(5)
   // ignore: avoid_init_to_null
   late num? estimatedOneRepMax = null;
-  @HiveField(7)
+  @HiveField(6)
   late num? currentPR = 0;
-  @HiveField(8)
+  @HiveField(7)
   // ignore: avoid_init_to_null
   late String? mainExerciseId = null;
+  // Training max at specific date
+  @HiveField(8)
+  late List<TrainingMax> trainingMaxData = [];
 }

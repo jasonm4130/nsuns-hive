@@ -124,7 +124,8 @@ class SetTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final num setWeight = roundToIncrement(
       increment: Boxes.getSetting(key: 'rounding'),
-      numberToRound: set.percentage! * exercise.trainingMax!,
+      numberToRound:
+          set.percentage! * exercise.trainingMaxData.last.trainingMax,
     );
     final num repsNeededForPR = caculateRepsNeededForNewPR(
             weight: setWeight, reps: set.reps, currentPR: exercise.currentPR!)

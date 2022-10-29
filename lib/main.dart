@@ -3,6 +3,7 @@ import 'package:nsuns/data/Cycle.dart';
 import 'package:nsuns/data/Day.dart';
 import 'package:nsuns/data/Exercise.dart';
 import 'package:nsuns/data/Set.dart';
+import 'package:nsuns/data/TrainingMax.dart';
 import 'package:nsuns/pages/cycle_page.dart';
 import 'package:nsuns/pages/exercise_page.dart';
 import 'package:nsuns/pages/home_page.dart';
@@ -19,6 +20,7 @@ void main() async {
   Hive.registerAdapter(ExerciseAdapter());
   Hive.registerAdapter(SetAdapter());
   Hive.registerAdapter(DayAdapter());
+  Hive.registerAdapter(TrainingMaxAdapter());
 
   // Open our hive box
   await Hive.openBox<Cycle>('cycles');

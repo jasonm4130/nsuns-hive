@@ -19,13 +19,13 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
     return Exercise()
       ..uuid = fields[0] as String
       ..name = fields[1] as String
-      ..trainingMax = fields[2] as num?
-      ..scaleFactor = fields[3] as num?
-      ..assistanceExcerciseId = fields[4] as String?
-      ..isAssistanceExcercise = fields[5] as bool
-      ..estimatedOneRepMax = fields[6] as num?
-      ..currentPR = fields[7] as num?
-      ..mainExerciseId = fields[8] as String?;
+      ..scaleFactor = fields[2] as num?
+      ..assistanceExcerciseId = fields[3] as String?
+      ..isAssistanceExcercise = fields[4] as bool
+      ..estimatedOneRepMax = fields[5] as num?
+      ..currentPR = fields[6] as num?
+      ..mainExerciseId = fields[7] as String?
+      ..trainingMaxData = (fields[8] as List).cast<TrainingMax>();
   }
 
   @override
@@ -37,19 +37,19 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.trainingMax)
-      ..writeByte(3)
       ..write(obj.scaleFactor)
-      ..writeByte(4)
+      ..writeByte(3)
       ..write(obj.assistanceExcerciseId)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.isAssistanceExcercise)
-      ..writeByte(6)
+      ..writeByte(5)
       ..write(obj.estimatedOneRepMax)
-      ..writeByte(7)
+      ..writeByte(6)
       ..write(obj.currentPR)
+      ..writeByte(7)
+      ..write(obj.mainExerciseId)
       ..writeByte(8)
-      ..write(obj.mainExerciseId);
+      ..write(obj.trainingMaxData);
   }
 
   @override

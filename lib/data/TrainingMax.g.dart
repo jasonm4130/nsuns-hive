@@ -1,37 +1,34 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'Cycle.dart';
+part of 'TrainingMax.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class CycleAdapter extends TypeAdapter<Cycle> {
+class TrainingMaxAdapter extends TypeAdapter<TrainingMax> {
   @override
-  final int typeId = 0;
+  final int typeId = 4;
 
   @override
-  Cycle read(BinaryReader reader) {
+  TrainingMax read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Cycle()
-      ..uuid = fields[0] as String
-      ..startDate = fields[1] as DateTime
-      ..days = (fields[2] as List).cast<Day>();
+    return TrainingMax()
+      ..trainingMax = fields[0] as num
+      ..date = fields[1] as DateTime;
   }
 
   @override
-  void write(BinaryWriter writer, Cycle obj) {
+  void write(BinaryWriter writer, TrainingMax obj) {
     writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.uuid)
-      ..writeByte(1)
-      ..write(obj.startDate)
       ..writeByte(2)
-      ..write(obj.days);
+      ..writeByte(0)
+      ..write(obj.trainingMax)
+      ..writeByte(1)
+      ..write(obj.date);
   }
 
   @override
@@ -40,7 +37,7 @@ class CycleAdapter extends TypeAdapter<Cycle> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CycleAdapter &&
+      other is TrainingMaxAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

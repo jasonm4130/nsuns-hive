@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:nsuns/components/settings_section.dart';
 import 'package:nsuns/data/Boxes.dart';
 import 'package:nsuns/data/Exercise.dart';
+import 'package:nsuns/data/TrainingMax.dart';
 import 'package:nsuns/pages/home_page.dart';
 import 'package:nsuns/utils/decimal_text_input_formatter.dart';
 import 'package:nsuns/utils/decorators.dart';
+import 'package:nsuns/utils/start_of_week.dart';
 import 'package:uuid/uuid.dart';
 
 class SetupPage extends StatefulWidget {
@@ -322,7 +324,11 @@ class SetupPageState extends State<SetupPage> {
                               Exercise bench = Exercise()
                                 ..uuid = benchUuid
                                 ..name = 'Bench Press'
-                                ..trainingMax = benchTM!
+                                ..trainingMaxData = [
+                                  TrainingMax()
+                                    ..trainingMax = benchTM!
+                                    ..date = startOfWeek()
+                                ]
                                 ..isAssistanceExcercise = false
                                 ..assistanceExcerciseId =
                                     benchAccessoryExercise.uuid
@@ -339,7 +345,11 @@ class SetupPageState extends State<SetupPage> {
                               Exercise squat = Exercise()
                                 ..uuid = squatUuid
                                 ..name = 'Squat'
-                                ..trainingMax = squatTM!
+                                ..trainingMaxData = [
+                                  TrainingMax()
+                                    ..trainingMax = squatTM!
+                                    ..date = startOfWeek()
+                                ]
                                 ..isAssistanceExcercise = false
                                 ..assistanceExcerciseId =
                                     squatAccessoryExercise.uuid
@@ -356,7 +366,11 @@ class SetupPageState extends State<SetupPage> {
                               Exercise deadlift = Exercise()
                                 ..uuid = deadliftUuid
                                 ..name = 'Deadlift'
-                                ..trainingMax = deadliftTM!
+                                ..trainingMaxData = [
+                                  TrainingMax()
+                                    ..trainingMax = deadliftTM!
+                                    ..date = startOfWeek()
+                                ]
                                 ..isAssistanceExcercise = false
                                 ..assistanceExcerciseId =
                                     deadliftAccessoryExercise.uuid
@@ -375,7 +389,11 @@ class SetupPageState extends State<SetupPage> {
                               Exercise overheadPress = Exercise()
                                 ..uuid = overheadPressUuid
                                 ..name = 'Overhead Press'
-                                ..trainingMax = overheadPressTM!
+                                ..trainingMaxData = [
+                                  TrainingMax()
+                                    ..trainingMax = overheadPressTM!
+                                    ..date = startOfWeek()
+                                ]
                                 ..isAssistanceExcercise = false
                                 ..assistanceExcerciseId =
                                     overheadPressAccessoryExercise.uuid
