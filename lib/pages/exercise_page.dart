@@ -124,12 +124,10 @@ class _ExercisePageState extends State<ExercisePage> {
                   (set) {
                     return SetTile(
                       set: set,
-                      trainingMax: exercise!.isAssistanceExcercise
-                          ? cycle
-                              .getExerciseById(key: exercise.mainExerciseId)
-                              .trainingMax
-                          : exercise.trainingMax,
                       cycle: cycle,
+                      exercise: exercise!.isAssistanceExcercise
+                          ? cycle.getExerciseById(key: exercise.mainExerciseId)
+                          : exercise,
                     );
                   },
                 )

@@ -3,11 +3,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nsuns/components/cycle_tile.dart';
 import 'package:nsuns/components/navigation_drawer.dart';
 import 'package:nsuns/data/Cycle.dart';
+import 'package:nsuns/data/Set.dart';
 import 'package:nsuns/pages/setup_page.dart';
 import 'package:nsuns/utils/consts.dart';
 import 'package:nsuns/utils/start_of_week.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:collection/collection.dart';
 import '../data/Boxes.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,14 +24,71 @@ Future addCycle() {
   final String template = Boxes.getSetting(key: 'template');
   final String uuid = const Uuid().v4();
 
+  // Get the cycles box
+  final box = Boxes.getCycles();
+
+  // Because the boxes are a key value pair we can get the most recent cycle from the box
+  Cycle? lastCycle;
+  if (box.length > 0) {
+    lastCycle = box.getAt(box.length - 1);
+  }
+
+  // If there was a last cycle then we want to check if the execrcises were completed and progress if needed
+  if (lastCycle != null) {
+    // Loop through all our exercises
+    Boxes.getExercises().values.forEach((exercise) {
+      // Loop through our last cycle days
+      List<Set> exerciseSets = [];
+      for (var day in lastCycle!.days) {
+        if (day.tOneExerciseId == exercise.uuid ||
+            day.tOneExerciseId == exercise.assistanceExcerciseId) {
+          exerciseSets = [...exerciseSets, ...day.tOneSets];
+        }
+        if (day.tTwoExerciseId == exercise.uuid ||
+            day.tTwoExerciseId == exercise.assistanceExcerciseId) {
+          exerciseSets = [...exerciseSets, ...day.tTwoSets];
+        }
+      }
+
+      // If all sets for the exercise are complete and all amrap sets hit the target reps
+      if (exerciseSets.every((set) => set.isComplete) &&
+          exerciseSets.where((set) => set.isAmrap).every((set) {
+            return set.repsCompleted >= set.reps;
+          })) {
+        // Get the amrap sets
+        Set? progressionSet = exerciseSets.firstWhereOrNull(
+          (set) => set.isAmrap && set.reps == 1,
+        );
+
+        // Update the training max based on the progression scheme
+        Map progression = Boxes.getSetting(key: 'progression');
+
+        if (progressionSet != null) {
+          // Get the key for the ammount we should progress
+          String progressionKey = progression.keys.firstWhere(
+            (key) => key.contains(progressionSet.repsCompleted.toString()),
+            orElse: () => "6+",
+          );
+          // Add the progression to the exercise and save it
+          exercise.trainingMax =
+              exercise.trainingMax! + progression[progressionKey];
+        } else {
+          // If there is no progression set, we should progress the exercise by the minimum progression set
+          exercise.trainingMax = exercise.trainingMax! +
+              progression.values
+                  .firstWhere((ammountToProgress) => ammountToProgress > 0);
+        }
+        exercise.save();
+      }
+    });
+  }
+
   final cycle = Cycle()
     ..uuid = uuid
     ..startDate = startOfWeek()
     ..exercises = Boxes.getExercises().values.toList()
     ..days = templates[template]();
 
-  // Get the cycles box
-  final box = Boxes.getCycles();
   return box.put(uuid, cycle);
 }
 
