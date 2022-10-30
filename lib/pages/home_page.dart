@@ -152,6 +152,9 @@ class _HomePageState extends State<HomePage> {
         valueListenable: Boxes.getCycles().listenable(),
         builder: (context, box, _) {
           final cycles = box.values.toList();
+          cycles.sort(
+            (a, b) => b.startDate.compareTo(a.startDate),
+          );
 
           return Center(
             child: Column(

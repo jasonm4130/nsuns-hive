@@ -8,6 +8,7 @@ import 'package:nsuns/pages/cycle_page.dart';
 import 'package:nsuns/pages/exercise_page.dart';
 import 'package:nsuns/pages/home_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:nsuns/pages/progress_page.dart';
 import 'package:nsuns/pages/settings_page.dart';
 import 'package:nsuns/pages/setup_page.dart';
 
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         SettingsPage.routeName: (context) => const SettingsPage(),
         SetupPage.routeName: (context) => const SetupPage(),
         ExercisePage.routeName: (context) => const ExercisePage(),
+        ProgressPage.routeName: (context) => const ProgressPage(),
       },
     );
   }

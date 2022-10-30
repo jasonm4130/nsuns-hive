@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nsuns/pages/home_page.dart';
+import 'package:nsuns/pages/progress_page.dart';
 import 'package:nsuns/pages/settings_page.dart';
 
 class NavigationDrawer extends StatelessWidget {
@@ -12,6 +13,7 @@ class NavigationDrawer extends StatelessWidget {
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: [
+          const SizedBox(height: 40),
           ListTile(
             leading: const Icon(
               Icons.home,
@@ -29,7 +31,7 @@ class NavigationDrawer extends StatelessWidget {
             title: const Text('Progress'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, SettingsPage.routeName);
+              Navigator.pushNamed(context, ProgressPage.routeName);
             },
           ),
           ListTile(
